@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import emo_response
 
 urlpatterns = [
-    path('detection/', views.emo_response)
+    path('detection/', emo_response.as_view(), name='emo_response'),
 ]
