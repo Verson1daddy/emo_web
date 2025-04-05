@@ -9,4 +9,4 @@ class Emotion(models.Model):
     emotion_analysis = models.TextField(default='unknown')
 
     def __str__(self):
-        return self.user
+        return self.user 
