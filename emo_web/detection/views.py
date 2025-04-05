@@ -12,11 +12,11 @@ from django.conf import settings
 
 from openai import OpenAI
 
+from .serializer import AutoModelSerializer
 
 class emo_response(APIView):
     def post(self,request):
-        response_dict = {}
-        input_message = request.data.get('emotion_input')
+        input_message = AutoModelSerializer(data=request.data)
         if not input_message.is_valid():
             return render(request,settings.BASE_DIR/'template'/'output.html',input_message.errors)
         input_text = input_message.validated_data["emotion_input"]
@@ -24,8 +24,8 @@ class emo_response(APIView):
         input_request_analysis = "回复要求：请用通俗易懂的语言分析这句话的情感状态，只要分析"
         input_request_comfort = "回复要求：请用通俗易懂的语言分析这句话,只给出安慰建议"        
         client = OpenAI(api_key=settings.DEEPSEEK_API_KEY, base_url=settings.DEEPSEEK_API_URL)
-        message_analysis = f'{input_message["emotion_input"]}\n\n{input_request_analysis}'
-        message_comfort = f'{input_message["emotion_input"]}\n\n{input_request_comfort}'
+        message_analysis = f'{input_text}\n\n{input_request_analysis}'
+        message_comfort = f'{input_text}\n\n{input_request_comfort}'
         try:
             # 情感分析请求
             analysis_response = client.chat.completions.create(
@@ -70,5 +70,12 @@ class emo_response(APIView):
             return render(request, settings.BASE_DIR/'template'/'output.html', {
                 'error': '请求失败，请稍后再试。'
             })
+
+#跳转到首页
+def emo_home(request):
+    render(request, 'detection/loading website.html')
         
+#跳转到输出页面
+def emo_output(request):
+    render(request, 'detection/output website.html')
         

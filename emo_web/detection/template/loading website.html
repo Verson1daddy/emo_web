@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>优化版气泡交互系统 | Enhanced Bubble System</title>
+    <style>
+        /* 扩展背景色范围 */
+        :root {
+            --color1: #91defe;
+            --color2: #95d8fc;
+            --color3: #99c0f9;
+            --color4: #9db0f6;
+            --color5: #a1b2f3;
+            --color6: #a5b4f0;
+            --color7: #a9b6ed;
+            --color8: #b1b8ea;
+            --color9: #b9bcea;
+            --color10: #bdb6ec;
+            --color11: #c1b2e9;
+            --color12: #c5aee7;
+            --color13: #c9aae5;
+            --color14: #cda6e3;
+            --color15: #d1a2e1;
+            --color16: #d7b3e3;
+            --color17: #dcb8e0;
+            --color18: #e1bcdc;
+            --color19: #e4b8dc;
+            --color20: #e8b4d8;
+            --color21: #ecb0d4;
+            --color22: #efb3d5;
+            --color23: #f1b6d2;
+            --color24: #f4b8ce;
+            --color25: #f6bacb;
+            --color26: #f9bccc;
+            --color27: #f8b8c8;
+            --color28: #f7b4c5;
+            --color29: #f7b0c5;
+            --color30: #f6acc2;
+            --color31: #f5a8bf;
+            --color32: #f5a4be;
+            --color33: #f4a0bb;
+            --color34: #f2a0b7;
+            --color35: #f09fb3;
+            --color36: #e89fbf;
+            --color37: #e0a6c4;
+            --color38: #d8a6c8;
+            --color39: #d0a6cc;
+            --color40: #c8a6d8;
+            --color41: #c0a6e4;
+            --color42: #b8a6e8;
+            --color43: #b0a6ec;
+            --color44: #a8b2f0;
+            --color45: #a0b7f4;
+            --color46: #98bcf8;
+            --color47: #91c1fc;
+            --color48: #91c8fe;
+            --color49: #91d4fe;
+            --color50: #91defe;
+        }
+
+        /* 修改背景为多颜色动画效果 */
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(360deg, 
+                var(--color1), var(--color2), var(--color3), var(--color4), 
+                var(--color5), var(--color6), var(--color7), var(--color8), 
+                var(--color9), var(--color10), var(--color11), var(--color12), 
+                var(--color13), var(--color14), var(--color15), var(--color16), 
+                var(--color17), var(--color18), var(--color19), var(--color20), 
+                var(--color21), var(--color22), var(--color23), var(--color24), 
+                var(--color25), var(--color26), var(--color27), var(--color28), 
+                var(--color29), var(--color30), var(--color31), var(--color32), 
+                var(--color33), var(--color34), var(--color35), var(--color36), 
+                var(--color37), var(--color38), var(--color39), var(--color40), 
+                var(--color41), var(--color42), var(--color43), var(--color44), 
+                var(--color45), var(--color46), var(--color47), var(--color48), 
+                var(--color49), var(--color50), var(--color1)); /* 闭环 */
+            background-size: 400% 400%; /* 扩大背景尺寸以覆盖整个页面 */
+            animation: backgroundAnimation 30s linear infinite; /* 动画持续30秒，循环播放 */
+            overflow: hidden;
+            font-family: "Arial", sans-serif;
+        }
+
+        @keyframes backgroundAnimation {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        /* 主气泡容器（满月样式，黄色主色调） */
+        .main-bubble {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 375px; /* 原大小300px增加四分之一 */
+            height: 375px; /* 原大小300px增加四分之一 */
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(255, 255, 200, 0.9) 60%, /* 中心亮黄色 */
+                rgba(255, 240, 150, 0.8) 80%, /* 外围浅黄色 */
+                rgba(255, 220, 100, 0.7) 100%); /* 边缘深黄色 */
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4), /* 外部阴影，模拟月亮的立体感 */
+                inset 0 10px 20px rgba(255, 255, 255, 0.6), /* 内部高光 */
+                inset 0 -10px 20px rgba(255, 200, 50, 0.3); /* 内部阴影 */
+            backdrop-filter: blur(15px); /* 模糊化处理 */
+            z-index: 100;
+        }
+
+        /* 小气泡样式（改为无色） */
+        .mini-bubble {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 77% 30%, 
+                rgba(255, 255, 255, 0.0) 5%, /* 无色中心 */
+                rgba(255, 255, 255, 0.0) 8%, /* 无色过渡 */
+                rgba(255, 255, 255, 0.0) 60%, /* 无色外围 */
+                rgba(255, 255, 255, 0.0) 100%); /* 无色边缘 */
+            box-shadow:
+                inset 0 0 15px rgba(255, 255, 255, 0.5), /* 保留高光 */
+                0 0 15px rgba(255, 255, 255, 0.3); /* 保留外部阴影 */
+            will-change: transform; /* GPU加速提示 */
+            transform: translate3d(0,0,0); /* 启用硬件加速 */
+            z-index: 5; /* 降低小气泡的层级 */
+        }
+
+        /* 控制面板容器 */
+        .control-panel {
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            z-index: 200;
+        }
+
+        /* 控制按钮样式（主气泡1/4尺寸） */
+        .control-btn {
+            width: 150px;   /* 300px / 2 */
+            height: 75px;   /* 300px / 4 */
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: #666;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* 文本输入区域 */
+        .bubble-text {
+            width: 70%;
+            height: 70%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: none;
+            background: transparent;
+            resize: none;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* 自定义滚动条 */
+        .bubble-text::-webkit-scrollbar {
+            width: 6px;
+        }
+        .bubble-text::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        /* 加载文字样式 */
+        .ml6 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 900;
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            white-space: nowrap;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .ml6 .text-wrapper {
+            position: relative;
+            display: inline-block;
+            padding-top: 0.2em;
+            padding-right: 0.05em;
+            padding-bottom: 0.1em;
+            overflow: hidden;
+        }
+
+        .ml6 .letter {
+            display: inline-block;
+            line-height: 1em;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="main-bubble">
+        <textarea class="bubble-text" placeholder="输入您的思绪..."></textarea>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="control-panel">
+        <div class="control-btn" id="submitBtn">提交</div>
+        <div class="control-btn" id="clearBtn">重置</div>
+    </div>
+
+    <!-- 加载文字 -->
+    <h1 class="ml6">
+        <span class="text-wrapper">
+            <span class="letters">正在加载中，请稍后......</span>
+        </span>
+    </h1>
+
+    <script>
+        class OptimizedBubbleSystem {
+            constructor() {
+                // 系统参数配置
+                this.CONFIG = {
+                    MAIN_RADIUS: 150,        // 主气泡半径
+                    MIN_RADIUS: 20,          // 小气泡最小半径
+                    MAX_RADIUS: 50,          // 小气泡最大半径
+                    BUBBLE_COUNT: 25,        // 气泡数量
+                    INIT_SPEED: 1.5,         // 初始速度基准值
+                    SAFE_MARGIN: 80,         // 安全边距
+                    REPULSION: 0.7,          // 排斥力系数
+                    COLLISION_COOLDOWN: 100  // 碰撞冷却时间(ms)
+                };
+
+                // 初始化元素引用
+                this.textArea = document.querySelector('.bubble-text');
+                this.controlButtons = {
+                    clear: document.getElementById('clearBtn'),
+                    submit: document.getElementById('submitBtn')
+                };
+
+                // 新增状态变量
+                this.isSubmitting = false;
+                this.rotationAngle = 0;
+                this.orbitRadius = 350; // 旋转轨道半径
+
+                // 系统初始化
+                this.initSystem();
+            }
+
+            /* 核心系统初始化 */
+            initSystem() {
+                this.bubbles = [];
+                this.collisionRecords = new Map();
+                this.controlButtonRects = [];
+
+                this.initMainBubble();
+                this.initControlFeatures();
+                this.generateBubbles();
+                this.startAnimation();
+            }
+
+            /* 主气泡初始化 */
+            initMainBubble() {
+                this.mainBubble = {
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    radius: this.CONFIG.MAIN_RADIUS * 1.25 /* 半径加大四分之一 */
+                };
+            }
+
+            /* 控制功能初始化 */
+            initControlFeatures() {
+                // 清除按钮功能
+                this.controlButtons.clear.addEventListener('click', () => {
+                    this.textArea.value = '';
+                    this.textArea.focus();
+                });
+
+                // 提交按钮功能（修改为触发动画）
+                this.controlButtons.submit.addEventListener('click', () => {
+                    if (!this.isSubmitting) {
+                        this.startTransitionAnimation();
+                    }
+                });
+
+                // 初始化按钮碰撞框
+                this.updateControlRects();
+            }
+
+            /* 气泡生成（增强安全检测） */
+            generateBubbles() {
+                const gridSize = this.CONFIG.MAX_RADIUS * 2 + this.CONFIG.SAFE_MARGIN;
+                const gridCols = Math.floor(window.innerWidth / gridSize);
+                const gridRows = Math.floor(window.innerHeight / gridSize);
+                const grid = new Array(gridCols * gridRows).fill(null);
+
+                for (let i = 0; i < this.CONFIG.BUBBLE_COUNT; i++) {
+                    let validPosition = false;
+                    let attempts = 0;
+
+                    while (!validPosition && attempts < 1000) {
+                        const radius = this.CONFIG.MIN_RADIUS + 
+                            Math.random() * (this.CONFIG.MAX_RADIUS - this.CONFIG.MIN_RADIUS);
+                        
+                        const col = Math.floor(Math.random() * gridCols);
+                        const row = Math.floor(Math.random() * gridRows);
+                        const index = row * gridCols + col;
+
+                        if (!grid[index]) {
+                            const x = col * gridSize + radius + this.CONFIG.SAFE_MARGIN;
+                            const y = row * gridSize + radius + this.CONFIG.SAFE_MARGIN;
+                            
+
+                            if (this.validatePosition(x, y, radius)) {
+                                this.createBubble(x, y, radius);
+                                grid[index] = true;
+                                validPosition = true;
+                            }
+                        }
+                        attempts++;
+                    }
+                }
+            }
+
+            /* 位置验证（三重检测） */
+            validatePosition(x, y, radius) {
+                // 检测主气泡碰撞
+                const dxMain = x - this.mainBubble.x;
+                const dyMain = y - this.mainBubble.y;
+                if (Math.hypot(dxMain, dyMain) < this.mainBubble.radius + radius + this.CONFIG.SAFE_MARGIN) {
+                    return false;
+                }
+
+                // 检测屏幕边界
+                if (x < radius || x > window.innerWidth - radius ||
+                    y < radius || y > window.innerHeight - radius) {
+                    return false;
+                }
+
+                // 检测其他气泡
+                return !this.bubbles.some(b => {
+                    const dx = x - b.x;
+                    const dy = y - b.y;
+                    return Math.hypot(dx, dy) < b.radius + radius + this.CONFIG.SAFE_MARGIN;
+                });
+            }
+
+            /* 创建气泡（低速初始化） */
+            createBubble(x, y, radius) {
+                const speed = this.CONFIG.INIT_SPEED + Math.random() * 0.5; // 1.5-2px/frame
+                const angle = Math.random() * Math.PI * 2;
+                
+                const bubble = {
+                    element: document.createElement('div'),
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    radius: radius,
+                    lastCollision: 0
+                };
+
+                // 设置气泡样式
+                bubble.element.className = 'mini-bubble';
+                bubble.element.style.width = `${radius * 2}px`;
+                bubble.element.style.height = `${radius * 2}px`;
+                bubble.element.style.transform = `translate(${x - radius}px, ${y - radius}px)`;
+                document.body.appendChild(bubble.element);
+                this.bubbles.push(bubble);
+            }
+
+            /* 碰撞处理系统 */
+            handleCollisions() {
+                // 气泡间碰撞
+                for (let i = 0; i < this.bubbles.length; i++) {
+                    for (let j = i + 1; j < this.bubbles.length; j++) {
+                        const b1 = this.bubbles[i];
+                        const b2 = this.bubbles[j];
+                        
+                        if (this.checkCollision(b1, b2) && 
+                            Date.now() - b1.lastCollision > this.CONFIG.COLLISION_COOLDOWN &&
+                            Date.now() - b2.lastCollision > this.CONFIG.COLLISION_COOLDOWN) {
+                            this.resolveCollision(b1, b2);
+                        }
+                    }
+
+                    // 边界与按钮碰撞
+                    this.handleBoundary(this.bubbles[i]);
+                    this.handleControlCollision(this.bubbles[i]);
+                }
+            }
+
+            /* 碰撞检测（实时距离法） */
+            checkCollision(b1, b2) {
+                const dx = b2.x - b1.x;
+                const dy = b2.y - b1.y;
+                return Math.hypot(dx, dy) < b1.radius + b2.radius;
+            }
+
+            /* 精确碰撞响应 */
+            resolveCollision(b1, b2) {
+                // 法线计算
+                const dx = b2.x - b1.x;
+                const dy = b2.y - b1.y;
+                const distance = Math.hypot(dx, dy);
+                const nx = dx / distance;
+                const ny = dy / distance;
+
+                // 速度交换（动量守恒）
+                const v1n = b1.vx * nx + b1.vy * ny;
+                const v2n = b2.vx * nx + b2.vy * ny;
+                
+                [b1.vx, b1.vy] = [
+                    b1.vx - (v1n - v2n) * nx,
+                    b1.vy - (v1n - v2n) * ny
+                ];
+                [b2.vx, b2.vy] = [
+                    b2.vx + (v1n - v2n) * nx,
+                    b2.vy + (v1n - v2n) * ny
+                ];
+
+                // 增强位置修正
+                const overlap = (b1.radius + b2.radius) - distance;
+                if (overlap > 0) {
+                    const correction = overlap * this.CONFIG.REPULSION;
+                    const ratio = b2.radius / (b1.radius + b2.radius);
+                    
+                    b1.x -= nx * correction * (1 - ratio);
+                    b1.y -= ny * correction * (1 - ratio);
+                    b2.x += nx * correction * ratio;
+                    b2.y += ny * correction * ratio;
+                }
+
+                // 更新碰撞时间
+                b1.lastCollision = b2.lastCollision = Date.now();
+            }
+
+            /* 控制按钮碰撞处理 */
+            handleControlCollision(bubble) {
+                this.controlButtonRects.forEach(rect => {
+                    // 计算最近点
+                    const closestX = Math.max(rect.left, Math.min(bubble.x, rect.right));
+                    const closestY = Math.max(rect.top, Math.min(bubble.y, rect.bottom));
+                    
+                    // 距离检测
+                    const dx = bubble.x - closestX;
+                    const dy = bubble.y - closestY;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+
+                    if (distance < bubble.radius) {
+                        // 碰撞响应
+                        const nx = dx / distance || 0;
+                        const ny = dy / distance || 0;
+                        
+                        // 速度反射（保持速度大小）
+                        const dot = bubble.vx * nx + bubble.vy * ny;
+                        bubble.vx -= 2 * dot * nx;
+                        bubble.vy -= 2 * dot * ny;
+
+                        // 位置修正
+                        const overlap = bubble.radius - distance;
+                        bubble.x += nx * overlap * 0.5;
+                        bubble.y += ny * overlap * 0.5;
+                    }
+                });
+            }
+
+            /* 边界处理 */
+            handleBoundary(bubble) {
+                // X轴边界
+                if (bubble.x < bubble.radius) {
+                    bubble.vx = Math.abs(bubble.vx);
+                    bubble.x = bubble.radius;
+                } else if (bubble.x > window.innerWidth - bubble.radius) {
+                    bubble.vx = -Math.abs(bubble.vx);
+                    bubble.x = window.innerWidth - bubble.radius;
+                }
+                
+                // Y轴边界
+                if (bubble.y < bubble.radius) {
+                    bubble.vy = Math.abs(bubble.vy);
+                    bubble.y = bubble.radius;
+                } else if (bubble.y > window.innerHeight - bubble.radius) {
+                    bubble.vy = -Math.abs(bubble.vy);
+                    bubble.y = window.innerHeight - bubble.radius;
+                }
+            }
+
+            /* 运行动画循环 */
+            startAnimation() {
+                const animate = () => {
+                    if (!this.isSubmitting) {
+                        this.updateControlRects();
+                        this.handleCollisions();
+                        
+                        // 平滑移动更新
+                        this.bubbles.forEach(bubble => {
+                            bubble.x += bubble.vx;
+                            bubble.y += bubble.vy;
+                            bubble.element.style.transform = 
+                                `translate(${bubble.x - bubble.radius}px, ${bubble.y - bubble.radius}px)`;
+                        });
+                    }
+
+                    requestAnimationFrame(animate.bind(this));
+                }
+                animate();
+            }
+
+            /* 更新控制按钮位置信息 */
+            updateControlRects() {
+                this.controlButtonRects = Array.from(document.querySelectorAll('.control-btn'))
+                    .map(btn => btn.getBoundingClientRect());
+            }
+
+            /* 主消失动画（结合网页3的预加载理念） */
+            startTransitionAnimation() {
+                this.isSubmitting = true;
+                const content = this.textArea.value.trim();
+                
+                if (!content) {
+                    alert('内容不能为空');
+                    this.isSubmitting = false;
+                    return;
+                }
+                
+                // 主气泡淡出动画（位置和大小保持不变）
+                anime({
+                    targets: '.main-bubble',
+                    opacity: 0,
+                    duration: 2000, // 延长动画时间
+                    easing: 'easeInExpo'
+                });
+
+                // 小气泡聚集动画（参考网页11的圆周运动）
+                this.bubbles.sort((a, b) => a.radius - b.radius); // 按直径从小到大排序
+                this.bubbles.forEach((bubble, index) => {
+                    const targetPos = this.calculateOrbitPosition(index);
+                    anime({
+                        targets: bubble.element,
+                        x: targetPos.x - bubble.radius,
+                        y: targetPos.y - bubble.radius,
+                        duration: 2000, // 延长动画时间
+                        easing: 'easeOutQuint',
+                        complete: () => {
+                            this.startRotationAnimation();
+                            this.animateLoadingText(); // 调用加载文字动画
+                        }
+                    });
+                });
+
+                // 显示提交内容
+                setTimeout(() => alert(`已提交内容：\n${content}`), 2500); // 延长显示时间
+            }
+
+            /* 计算环形布局坐标（基于网页10的坐标计算） */
+            calculateOrbitPosition(index) {
+                const angle = (index * 2 * Math.PI)/this.bubbles.length;
+                return {
+                    x: this.mainBubble.x + this.orbitRadius * Math.cos(angle),
+                    y: this.mainBubble.y + this.orbitRadius * Math.sin(angle)
+                };
+            }
+
+            /* 持续旋转动画（参考网页8的动画循环） */
+            startRotationAnimation() {
+                
+                this.rotationAngle += 0.0005; // 降低旋转速度
+                
+                this.bubbles.forEach((bubble, index) => {
+                    const currentAngle = this.rotationAngle + (index * 2 * Math.PI)/this.bubbles.length;
+                    const x = this.mainBubble.x + this.orbitRadius * Math.cos(currentAngle);
+                    const y = this.mainBubble.y + this.orbitRadius * Math.sin(currentAngle);
+                    
+                    bubble.element.style.transform = `translate(
+                        ${x - bubble.radius}px, 
+                        ${y - bubble.radius}px
+                    )`;
+                });
+                
+                if (this.isSubmitting) {
+                    requestAnimationFrame(() => this.startRotationAnimation());
+                }
+            }
+
+            /* 加载文字动画 */
+            animateLoadingText() {
+                const textWrapper = document.querySelector('.ml6 .letters');
+                textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+                anime.timeline({loop: true})
+                    .add({
+                        targets: '.ml6 .letter',
+                        translateY: ["1.1em", 0],
+                        translateZ: 0,
+                        duration: 750,
+                        delay: (el, i) => 50 * i
+                    }).add({
+                        targets: '.ml6',
+                        opacity: 0,
+                        duration: 1000,
+                        easing: "easeOutExpo",
+                        delay: 1000
+                    });
+            }
+        }
+
+        // 系统初始化
+        window.addEventListener('load', () => new OptimizedBubbleSystem());
+        window.addEventListener('resize', () => {
+            document.querySelector('.main-bubble').style.transform = 'translate(-50%, -50%)';
+        });
+    </script>
+</body>
+</html>

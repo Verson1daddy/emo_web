@@ -23,7 +23,7 @@ load_dotenv(BASE_DIR / '.env',encoding='utf-16')  # 加载 .env 文件
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 DEEPSEEK_API_URL = os.getenv('DEEPSEEK_API_URL')
 
-AUTH_USER_MODEL = "detection.User"
+AUTH_USER_MODEL = "auth.User"
 
 
 # Quick-start development settings - unsuitable for production

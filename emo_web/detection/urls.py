@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path("anlysis/", views.emo_response, name="analysis"),
-    path('home/', template.input.html, name = 'home'),
-    path('output/', template.output.html, name = 'output'),
+    path('home/', views.emo_home, name = 'home'),
+    path('output/', views.emo_output, name = 'output'),
     # 其他路由...
 ]
