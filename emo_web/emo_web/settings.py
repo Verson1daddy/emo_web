@@ -23,6 +23,8 @@ load_dotenv(BASE_DIR / '.env',encoding='utf-16')  # 加载 .env 文件
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 DEEPSEEK_API_URL = os.getenv('DEEPSEEK_API_URL')
 
+AUTH_USER_MODEL = "detection.User"
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -85,8 +87,15 @@ WSGI_APPLICATION = 'emo_web.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # 指定使用 MySQL
+        'NAME': 'emotion_chat',          # 数据库名称
+        'USER': 'emo_web_test',         # MySQL 用户名
+        'PASSWORD': 'zwm2401',     # MySQL 密码
+        'HOST': 'localhost',                   # 数据库主机（本地用默认值）
+        'PORT': '3306',                        # MySQL 默认端口
+        'OPTIONS': {
+            'charset': 'utf8mb4',             # 支持中文和特殊字符
+        }
     }
 }
 
