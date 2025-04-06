@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>优化版气泡动画</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* 禁用滚动条 */
+            background: #1a1a2e; 
+        }
+        section{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: black; /* 设置纯黑色背景 */
+            animation: none; /* 移除背景动画 */
+        }
+
+        @keyframes animateBg{
+            0%,100%{
+                transform: scale(1);
+            }
+            50%{
+                transform: scale(1.2);
+            }
+        }
+
+        span{
+            position: absolute;
+            top:50%;
+            left:50%;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.1),0 0 0 8px rgba(255,255,255,0.1),0 0 20px rgba(255,255,255,0.1);
+            animation: animate 3s linear infinite;
+        }
+        span::before{
+            content:''; 
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(90deg,#fff,transparent);
+        }
+        @keyframes animate
+        {
+            0%
+            {
+                transform: rotate(315deg) translateX(0);
+                opacity: 1;
+            }
+            70%
+            {
+                opacity: 1;
+            }
+            100%
+            {
+                transform: rotate(315deg) translateX(-1000px);
+                opacity: 0;
+            }
+        }
+        span:nth-child(1){
+            top: 0;
+            right: 0;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 1s;
+        }
+        span:nth-child(2){
+            top: 0;
+            right: 80px;
+            left: initial;
+            animation-delay: 0.2s;
+            animation-duration: 3s;
+        }
+        span:nth-child(3){
+            top: 80;
+            right: 0px;
+            left: initial;
+            animation-delay: 0.4s;
+            animation-duration: 2s;
+        }
+        span:nth-child(4){
+            top: 0;
+            right: 180px;
+            left: initial;
+            animation-delay: 0.6s;
+            animation-duration: 1.5s;
+        }
+        span:nth-child(5){
+            top: 0;
+            right: 400px;
+            left: initial;
+            animation-delay: 0.8s;
+            animation-duration: 2.5s;
+        }
+        span:nth-child(6){
+            top: 0;
+            right: 600px;
+            left: initial;
+            animation-delay: 1s;
+            animation-duration: 3s;
+        }
+        span:nth-child(7){
+            top: 300px;
+            right: 0px;
+            left: initial;
+            animation-delay: 1.2s;
+            animation-duration: 1.75s;
+        }
+        span:nth-child(8){
+            top: 0px;
+            right: 700px;
+            left: initial;
+            animation-delay: 1.4s;
+            animation-duration: 1.25s;
+        }
+        span:nth-child(9){
+            top: 0px;
+            right: 1000px;
+            left: initial;
+            animation-delay: 0.75s;
+            animation-duration: 2.25s;
+        }
+        span:nth-child(10){
+            top: 50px;
+            right: 200px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 2s;
+        }
+        span:nth-child(11){
+            top: 100px;
+            right: 300px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 2.5s;
+        }
+        span:nth-child(12){
+            top: 150px;
+            right: 400px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 3s;
+        }
+        span:nth-child(13){
+            top: 200px;
+            right: 500px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 1.5s;
+        }
+        span:nth-child(14){
+            top: 250px;
+            right: 600px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 2.25s;
+        }
+        span:nth-child(15){
+            top: 300px;
+            right: 700px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 1.75s;
+        }
+        span:nth-child(16){
+            top: 350px;
+            right: 800px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 2.5s;
+        }
+        span:nth-child(17){
+            top: 400px;
+            right: 900px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 2s;
+        }
+        span:nth-child(18){
+            top: 450px;
+            right: 1100px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 3s;
+        }
+        span:nth-child(19){
+            top: 500px;
+            right: 1200px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 1.5s;
+        }
+        span:nth-child(20){
+            top: 550px;
+            right: 1300px;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 2.25s;
+        }
+
+        /* 烟雾效果样式 */
+        .color-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            animation: colorWave 32s linear infinite;
+            filter: blur(50px);
+            z-index: 1; /* 确保烟雾层在其他元素下方 */
+        }
+
+        @keyframes colorWave {
+            0%, 15% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            3% {
+                opacity: 1;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(3);
+            }
+            15% {
+                opacity: 0;
+                transform: scale(4);
+            }
+        }
+
+        .color-layer::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            left: -50%;
+            top: -50%;
+            background: radial-gradient(circle at 50% 50%, 
+                var(--color) 10%,
+                rgba(255,255,255,0.3) 50%,
+                transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 四色分层控制 */
+        .color-layer:nth-child(1) { 
+            --color: var(--color-1);
+            animation-delay: 0s;
+        }
+        .color-layer:nth-child(2) { 
+            --color: var(--color-2);
+            animation-delay: 8s;
+        }
+        .color-layer:nth-child(3) { 
+            --color: var(--color-3);
+            animation-delay: 16s;
+        }
+        .color-layer:nth-child(4) { 
+            --color: var(--color-4);
+            animation-delay: 24s;
+        }
+
+        /* 左右大气泡样式（应用70中的大气泡样式） */
+        .fixed-bubble {
+            position: fixed;
+            width: 375px; /* 调整为70中的大小 */
+            height: 375px; /* 调整为70中的大小 */
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(255, 255, 200, 0.9) 60%, /* 中心亮黄色 */
+                rgba(255, 240, 150, 0.8) 80%, /* 外围浅黄色 */
+                rgba(255, 220, 100, 0.7) 100%); /* 边缘深黄色 */
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4), /* 外部阴影，模拟月亮的立体感 */
+                inset 0 10px 20px rgba(255, 255, 255, 0.6), /* 内部高光 */
+                inset 0 -10px 20px rgba(255, 200, 50, 0.3); /* 内部阴影 */
+            backdrop-filter: blur(15px); /* 模糊化处理 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            z-index: 10; /* 提升大气泡的层级 */
+        }
+
+        .left-bubble {
+            left: 200px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .right-bubble {
+            right: 200px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .bubble-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000; /* 修改字体颜色为黑色 */
+            margin-bottom: 10px;
+            text-align: center; /* 居中显示文字 */
+        }
+
+        .bubble-content {
+            font-size: 16px;
+            color: #000; /* 修改字体颜色为黑色 */
+            text-align: center;
+            padding: 10px;
+            line-height: 1.5;
+            overflow-y: auto; /* 添加垂直滚动条 */
+            max-height: calc(100% - 50px); /* 限制内容高度，避免超出气泡 */
+        }
+
+        .bubble-content::-webkit-scrollbar {
+            width: 6px; /* 滚动条宽度 */
+        }
+
+        .bubble-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2); /* 滚动条颜色 */
+            border-radius: 3px; /* 滚动条圆角 */
+        }
+
+        /* 小气泡样式（改为无色） */
+        .mini-bubble {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 77% 30%, 
+                rgba(255, 255, 255, 0.0) 5%, /* 无色中心 */
+                rgba(255, 255, 255, 0.0) 8%, /* 无色过渡 */
+                rgba(255, 255, 255, 0.0) 60%, /* 无色外围 */
+                rgba(255, 255, 255, 0.0) 100%); /* 无色边缘 */
+            box-shadow:
+                inset 0 0 15px rgba(255, 255, 255, 0.5), /* 保留高光 */
+                0 0 15px rgba(255, 255, 255, 0.3); /* 保留外部阴影 */
+            will-change: transform; /* GPU加速提示 */
+            transform: translate3d(0,0,0); /* 启用硬件加速 */
+            z-index: 5; /* 降低小气泡的层级 */
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            animation: fade-in-out 1s ease-out;
+        }
+
+        @keyframes fade-in-out {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+
+        /* 鼠标特效样式 */
+        .star {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #ffd700;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 
+                                50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            pointer-events: none;
+            transition: all 2s linear; /* 延长到2秒并使用匀速动画 */
+        }
+
+        .fly {
+            transform: translateY(-150vh) rotate(720deg); /* 增加移动距离和旋转角度 */
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 烟雾效果层 -->
+    <div class="color-layer"></div>
+    <div class="color-layer"></div>
+    <div class="color-layer"></div>
+    <div class="color-layer"></div>
+
+    <section>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </section>
+    <div class="fixed-bubble left-bubble">
+        <div class="bubble-title">情感分析</div>
+        <div class="bubble-content" id="leftBubbleContent">等待加载...</div> <!-- 左气泡内容 -->
+    </div>
+    <div class="fixed-bubble right-bubble">
+        <div class="bubble-title">言语慰藉</div>
+        <div class="bubble-content" id="rightBubbleContent">等待加载...</div> <!-- 右气泡内容 -->
+    </div>
+
+    <script>
+        // 从 37.html 的颜色中随机抽取 10 种颜色
+        const colors = [
+            '#91defe', '#95d8fc', '#99c0f9', '#9db0f6', '#a1b2f3', '#a5b4f0', '#a9b6ed', '#b1b8ea',
+            '#b9bcea', '#bdb6ec', '#c1b2e9', '#c5aee7', '#c9aae5', '#cda6e3', '#d1a2e1', '#d7b3e3',
+            '#dcb8e0', '#e1bcdc', '#e4b8dc', '#e8b4d8', '#ecb0d4', '#efb3d5', '#f1b6d2', '#f4b8ce',
+            '#f6bacb', '#f9bccc', '#f8b8c8', '#f7b4c5', '#f7b0c5', '#f6acc2', '#f5a8bf', '#f5a4be',
+            '#f4a0bb', '#f2a0b7', '#f09fb3', '#e89fbf', '#e0a6c4', '#d8a6c8', '#d0a6cc', '#c8a6d8',
+            '#c0a6e4', '#b8a6e8', '#b0a6ec', '#a8b2f0', '#a0b7f4', '#98bcf8', '#91c1fc', '#91c8fe',
+            '#91d4fe', '#91defe'
+        ];
+
+        function applyRandomColors() {
+            const selectedColors = [];
+            while (selectedColors.length < 10) {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                if (!selectedColors.includes(randomColor)) {
+                    selectedColors.push(randomColor);
+                }
+            }
+
+            // 动态更新 CSS 变量
+            const root = document.documentElement;
+            selectedColors.forEach((color, index) => {
+                root.style.setProperty(`--color-${index + 1}`, color);
+            });
+        }
+
+        // 初始化随机颜色
+        applyRandomColors();
+
+        class FixedBubbleSystem {
+            constructor() {
+                this.CONFIG = {
+                    MIN_RADIUS: 37.5,   // 增大最小半径
+                    MAX_RADIUS: 75,     // 增大最大半径
+                    BUBBLE_COUNT: 15,   // 减少小气泡数量到15
+                    SPEED: 1.0,         // 进一步减小初始速度
+                    SAFE_MARGIN: 200    // 动态边距
+                };
+
+                // 动态计算大气泡位置
+                this.fixedBubbles = [
+                    { x: this.CONFIG.SAFE_MARGIN, y: window.innerHeight / 2, radius: 200 },
+                    { x: window.innerWidth - this.CONFIG.SAFE_MARGIN, y: window.innerHeight / 2, radius: 200 }
+                ];
+
+                this.bubbles = [];
+                this.initBubbles();
+                this.startAnimation();
+
+                // 窗口尺寸变化监听
+                window.addEventListener('resize', this.handleResize.bind(this));
+            }
+
+            initBubbles() {
+                for (let i = 0; i < this.CONFIG.BUBBLE_COUNT; i++) {
+                    this.createBubble();
+                }
+            }
+
+            createBubble() {
+                const radius = this.CONFIG.MIN_RADIUS + 
+                    Math.random() * (this.CONFIG.MAX_RADIUS - this.CONFIG.MIN_RADIUS);
+                
+                // 安全区域生成
+                const x = Math.random() * (window.innerWidth - 2 * radius) + radius;
+                const y = Math.random() * (window.innerHeight - 2 * radius) + radius;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const bubble = {
+                    element: document.createElement('div'),
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * this.CONFIG.SPEED,
+                    vy: Math.sin(angle) * this.CONFIG.SPEED,
+                    radius: radius
+                };
+
+                bubble.element.className = 'mini-bubble';
+                bubble.element.style.width = `${radius * 2}px`;
+                bubble.element.style.height = `${radius * 2}px`;
+                document.body.appendChild(bubble.element);
+                this.bubbles.push(bubble);
+            }
+
+            startAnimation() {
+                const animate = () => {
+                    this.handleCollisions();
+                    this.bubbles.forEach(bubble => {
+                        // 位置更新
+                        bubble.x += bubble.vx;
+                        bubble.y += bubble.vy;
+                        
+                        // 边界修正
+                        if (bubble.x < bubble.radius) {
+                            bubble.vx *= -1;
+                            bubble.x = bubble.radius;
+                        } else if (bubble.x > window.innerWidth - bubble.radius) {
+                            bubble.vx *= -1;
+                            bubble.x = window.innerWidth - bubble.radius;
+                        }
+                        if (bubble.y < bubble.radius) {
+                            bubble.vy *= -1;
+                            bubble.y = bubble.radius;
+                        } else if (bubble.y > window.innerHeight - bubble.radius) {
+                            bubble.vy *= -1;
+                            bubble.y = window.innerHeight - bubble.radius;
+                        }
+
+                        // 使用3D变换提升性能
+                        bubble.element.style.transform = 
+                            `translate3d(${bubble.x - bubble.radius}px, ${bubble.y - bubble.radius}px, 0)`;
+                    });
+
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+
+            handleCollisions() {
+                // 空间划分优化
+                const gridSize = 100;
+                const grid = new Map();
+
+                // 网格归类
+                this.bubbles.forEach(bubble => {
+                    const gridX = Math.floor(bubble.x / gridSize);
+                    const gridY = Math.floor(bubble.y / gridSize);
+                    const key = `${gridX},${gridY}`;
+                    grid.set(key, [...(grid.get(key) || []), bubble]);
+                });
+
+                // 碰撞检测
+                grid.forEach((bubblesInCell, key) => {
+                    const [gridX, gridY] = key.split(',').map(Number);
+                    
+                    // 检测相邻网格
+                    for (let x = -1; x <= 1; x++) {
+                        for (let y = -1; y <= 1; y++) {
+                            const neighborKey = `${gridX + x},${gridY + y}`;
+                            const neighbors = grid.get(neighborKey) || [];
+                            
+                            // 检测当前气泡与相邻网格气泡的碰撞
+                            bubblesInCell.forEach(bubble => {
+                                neighbors.forEach(otherBubble => {
+                                    if (bubble === otherBubble) return;
+                                    
+                                    const dx = bubble.x - otherBubble.x;
+                                    const dy = bubble.y - otherBubble.y;
+                                    const distance = Math.hypot(dx, dy);
+                                    
+                                    if (distance < bubble.radius + otherBubble.radius) {
+                                        // 速度交换
+                                        [bubble.vx, otherBubble.vx] = [otherBubble.vx, bubble.vx];
+                                        [bubble.vy, otherBubble.vy] = [otherBubble.vy, bubble.vy];
+                                        
+                                        // 位置修正
+                                        const overlap = (bubble.radius + otherBubble.radius - distance) / 2;
+                                        const nx = dx / distance;
+                                        const ny = dy / distance;
+                                        
+                                        bubble.x += nx * overlap;
+                                        bubble.y += ny * overlap;
+                                        otherBubble.x -= nx * overlap;
+                                        otherBubble.y -= ny * overlap;
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
+            }
+
+            handleResize() {
+                // 更新大气泡位置
+                this.fixedBubbles[0].x = this.CONFIG.SAFE_MARGIN;
+                this.fixedBubbles[1].x = window.innerWidth - this.CONFIG.SAFE_MARGIN;
+                this.fixedBubbles.forEach(bubble => bubble.y = window.innerHeight / 2);
+            }
+        }
+
+            // 模拟后端数据加载
+            function loadBubbleContent() {
+                    // 从后端获取数据
+                    const queryParams = new URLSearchParams(window.location.search);
+                    const emotionInput = queryParams.get('emotion_input'); // 获取用户输入的内容
+
+                    if (!emotionInput) {
+                        document.getElementById('leftBubbleContent').innerText = '未提供情感分析输入';
+                        document.getElementById('rightBubbleContent').innerText = '未提供言语慰藉内容';
+                        return;
+                    }
+
+                    // 调用后端接口获取分析结果
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "http://localhost:8000/analysis/", true);
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                console.log("后端返回:", response);
+
+                                // 更新页面内容
+                                document.getElementById('leftBubbleContent').innerText = `情感分析结果：${response.emotion_analysis || '无'}`;
+                                document.getElementById('rightBubbleContent').innerText = `言语慰藉内容：${response.comfort || '无'}`;
+                            } else {
+                                console.error("请求失败:", xhr.responseText);
+                                document.getElementById('leftBubbleContent').innerText = '情感分析加载失败';
+                                document.getElementById('rightBubbleContent').innerText = '言语慰藉加载失败';
+                            }
+                        }
+                    };
+
+                    // 发送用户输入到后端
+                    const formData = {
+                        "emotion_input": emotionInput
+                    };
+                    xhr.send(JSON.stringify(formData));
+                }
+
+        // 鼠标特效逻辑
+        let lastStar = null;
+
+        document.addEventListener('mousemove', (e) => {
+            const newStar = document.createElement('div');
+            newStar.className = 'star';
+            // 精确中心定位
+            newStar.style.left = `${e.clientX - 12}px`;
+            newStar.style.top = `${e.clientY - 12}px`;
+            
+            if (lastStar) {
+                lastStar.classList.add('fly');
+                lastStar.addEventListener('transitionend', () => {
+                    lastStar.remove();
+                });
+            }
+            
+            document.body.appendChild(newStar);
+            lastStar = newStar;
+        });
+
+        // 初始化系统
+        window.addEventListener('load', () => {
+            new FixedBubbleSystem();
+            loadBubbleContent(); // 加载后端数据
+        });
+    </script>
+</body>
+</html>
