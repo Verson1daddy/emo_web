@@ -607,16 +607,45 @@
             }
         }
 
-        // 模拟后端数据加载
-        function loadBubbleContent() {
-            // 模拟后端返回的数据
-            const leftContent = "这是左侧气泡的内容，由后端提供。";
-            const rightContent = "这是右侧气泡的内容，由后端提供。";
+            // 模拟后端数据加载
+            function loadBubbleContent() {
+                    // 从后端获取数据
+                    const queryParams = new URLSearchParams(window.location.search);
+                    const emotionInput = queryParams.get('emotion_input'); // 获取用户输入的内容
 
-            // 更新气泡内容
-            document.getElementById('leftBubbleContent').innerText = leftContent;
-            document.getElementById('rightBubbleContent').innerText = rightContent;
-        }
+                    if (!emotionInput) {
+                        document.getElementById('leftBubbleContent').innerText = '未提供情感分析输入';
+                        document.getElementById('rightBubbleContent').innerText = '未提供言语慰藉内容';
+                        return;
+                    }
+
+                    // 调用后端接口获取分析结果
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "http://localhost:8000/analysis/", true);
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                console.log("后端返回:", response);
+
+                                // 更新页面内容
+                                document.getElementById('leftBubbleContent').innerText = `情感分析结果：${response.emotion_analysis || '无'}`;
+                                document.getElementById('rightBubbleContent').innerText = `言语慰藉内容：${response.comfort || '无'}`;
+                            } else {
+                                console.error("请求失败:", xhr.responseText);
+                                document.getElementById('leftBubbleContent').innerText = '情感分析加载失败';
+                                document.getElementById('rightBubbleContent').innerText = '言语慰藉加载失败';
+                            }
+                        }
+                    };
+
+                    // 发送用户输入到后端
+                    const formData = {
+                        "emotion_input": emotionInput
+                    };
+                    xhr.send(JSON.stringify(formData));
+                }
 
         // 鼠标特效逻辑
         let lastStar = null;
